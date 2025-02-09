@@ -2,26 +2,17 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
 
 
-Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('dashboard');
-    } else {
-        return redirect()->route('login');
-    }
-});
+Route::redirect('/', '/dashboard')->middleware('auth')->name('home');
 
-Route::get('/dashboard', function () {
-    if (Auth::user()->hasRole('admin')) {
-        return redirect()->route('admin.dashboard');
-    } elseif (Auth::user()->hasRole('user')) {
-        return redirect()->route('user.dashboard');
-    }
-    return redirect()->route('home');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', DashboardController::class)
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -44,6 +35,4 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 
-
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
