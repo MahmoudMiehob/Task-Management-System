@@ -9,15 +9,12 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class AdminUserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $admin = User::create([
             'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('12345678'),
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('S1t2R@#oN99g'),
         ]);
 
         $adminRole = Role::where('name', 'admin')->first();
