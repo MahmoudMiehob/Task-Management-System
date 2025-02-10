@@ -1,0 +1,46 @@
+/* Custom Navbar Styles */
+.bg-blur {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 24px -6px rgba(0, 0, 0, 0.1);
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, #6366f1, #3b82f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hover-scale {
+    transition: all 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: translateY(-1px);
+    background: rgba(99, 102, 241, 0.1) !important;
+}
+
+.navbar-toggler {
+    transition: all 0.3s ease;
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.navbar-toggler:hover {
+    background: rgba(99, 102, 241, 0.2);
+}
+
+.nav-link {
+    color: #1f2937 !important;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-link i {
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover i {
+    transform: translateX(2px);
+}

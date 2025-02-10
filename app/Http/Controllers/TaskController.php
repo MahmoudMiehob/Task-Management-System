@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskController extends Controller
 {
@@ -35,7 +36,7 @@ class TaskController extends Controller
                     ->whereIn('role_id', [2]);
             })->get();
 
-            return view('admin.dashboard', compact('tasks','users'));
+            return view('admin.dashboard', compact('tasks', 'users'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred while fetching tasks. Please try again later.');
         }
@@ -67,21 +68,6 @@ class TaskController extends Controller
         }
     }
 
-    //show form to create task
-    public function create()
-    {
-        try {
-            $users = User::whereIn('id', function ($query) {
-                $query->select('model_id')
-                    ->from('model_has_roles')
-                    ->whereIn('role_id', [2, 3]); // manager and user roles
-            })->get();
-            return view('tasks.create', compact('users'));
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while fetching users. Please try again later.');
-        }
-    }
-
     //store task
     public function store(StoreTaskRequest $request)
     {
@@ -103,27 +89,23 @@ class TaskController extends Controller
         }
     }
 
-    //show form to edit task
-    public function edit(Task $task)
-    {
-        try {
-            $users = User::whereIn('id', function ($query) {
-                $query->select('model_id')
-                    ->from('model_has_roles')
-                    ->whereIn('role_id', [2, 3]); // manager and user roles
-            })->get();
-
-            return view('tasks.edit', compact('task', 'users'));
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while fetching users. Please try again later.');
-        }
-    }
-
     // Update a task
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        $task->update($request->all());
-        return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
+        try {
+            if (!$task) {
+                throw new ModelNotFoundException('Task not found.');
+            }
+
+            $task->fill($request->validated());
+            $task->save();
+
+            return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('tasks.index')->with('error', 'Task not found.');
+        } catch (\Exception $e) {
+            return redirect()->route('tasks.index')->with('error', 'An error occurred while updating the task.');
+        }
     }
 
     // Delete a task
