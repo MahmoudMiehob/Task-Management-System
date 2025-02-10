@@ -26,8 +26,6 @@
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
     <!-- CSS -->
-    <link href="{{ asset('css/admindashboard.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/userdashboard.css') }}" rel="stylesheet">
     <link href="{{ asset('css/navbar.css') }}" rel="stylesheet">
 </head>
 

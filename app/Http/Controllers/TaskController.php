@@ -13,10 +13,19 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskController extends Controller
 {
+    public function index()
+    {
+        try {
+            $tasks = Task::with(['assignedTo', 'createdBy'])->get();
+            return view('tasks.index', compact('tasks'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while fetching tasks. Please try again later.');
+        }
+    }
     public function adminDashboard()
     {
         try {
-            $tasks = Task::with(['assignedTo', 'createdBy'])->paginate(2);
+            $tasks = Task::with(['assignedTo', 'createdBy'])->paginate(10);
             $users = User::whereIn('id', function ($query) {
                 $query->select('model_id')
                     ->from('model_has_roles')
