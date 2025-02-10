@@ -23,8 +23,6 @@ Route::middleware('auth')->group(function () {
 // User Dashboard
 Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/user/dashboard', [TaskController::class, 'userDashboard'])->name('user.dashboard');
-
-
     Route::post('/user/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('user.tasks.updateStatus');
 });
 

@@ -13,23 +13,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskController extends Controller
 {
-    //all tasks
-    public function index()
-    {
-        try {
-            $tasks = Task::with(['assignedTo', 'createdBy'])->get();
-            return view('tasks.index', compact('tasks'));
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while fetching tasks. Please try again later.');
-        }
-    }
-
-
     public function adminDashboard()
     {
         try {
-            $tasks = Task::with(['assignedTo', 'createdBy'])->get();
-
+            $tasks = Task::with(['assignedTo', 'createdBy'])->paginate(2);
             $users = User::whereIn('id', function ($query) {
                 $query->select('model_id')
                     ->from('model_has_roles')
@@ -44,7 +31,6 @@ class TaskController extends Controller
     public function userDashboard()
     {
         try {
-            // Fetch tasks assigned to the logged-in user
             $tasks = Task::where('assigned_to', auth()->id())->get();
             return view('user.dashboard', compact('tasks'));
         } catch (\Exception $e) {
@@ -55,7 +41,6 @@ class TaskController extends Controller
     public function updateStatus(Request $request, Task $task)
     {
         try {
-            // Validate the status update
             $request->validate([
                 'status' => 'required|in:pending,in_progress,completed',
             ]);
@@ -76,6 +61,7 @@ class TaskController extends Controller
             Task::create([
                 'title' => $request->title,
                 'description' => $request->description,
+                'status' => $request->status,
                 'assigned_to' => $request->assigned_to,
                 'created_by' => auth()->id(),
             ]);
